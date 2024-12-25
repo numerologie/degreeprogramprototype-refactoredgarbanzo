@@ -6,7 +6,7 @@ openai.api_key = "your_openai_api_key_here"
 
 
 # Define the system message for the chatbot
-system_message = SYSTEM_MESSAGE
+system_message = "SYSTEM_MESSAGE"
 # Streamlit App
 st.title("University Chatbot")
 st.write("Ask me anything about the MSL program at USC Gould School of Law!")
