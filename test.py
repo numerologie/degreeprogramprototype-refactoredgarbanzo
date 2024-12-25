@@ -2,7 +2,7 @@ import streamlit as st
 import openai
 
 # OpenAI API Key
-openai.api_key = "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"
+openai.api_key = "sk-svcacct-GX0sx1OBOPnK3xW1V77Zpj-BdRrh7RCHzRZkcA9FORy93tN6mfnXE8Snp4MtsqeET3BlbkFJi6Nj5BaE5DIttonKyZzNXkLbnvKlGBv54ECeg9_oRJenB9G1SdHlpGphIxC6NdcA"
 
 
 # Define the system message for the chatbot
