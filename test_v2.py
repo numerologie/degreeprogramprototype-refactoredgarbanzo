@@ -3,7 +3,7 @@ import streamlit as st
 import openai
 
 # Retrieve the OpenAI API key and system message from environment
-openai.api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key = os.getenv("YOUR_OPENAI_API_KEY_HERE")
 if not openai.api_key:
     st.error("OpenAI API key is not set! Please configure the OPENAI_API_KEY environment variable.")
     st.stop()
