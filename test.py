@@ -26,7 +26,7 @@ if st.button("Ask"):
         try:
             # Call OpenAI API with updated syntax
             response = openai.ChatCompletion.create(
-                model="gpt-4",  # Ensure you are using a valid model name
+                model="gpt-4",  # Ensure you're using a valid model name
                 messages=[
                     {"role": "system", "content": system_message},
                     {"role": "user", "content": user_input}
