@@ -1,49 +1,57 @@
+import os
 import streamlit as st
 import openai
 
-# Set your OpenAI API key
-openai.api_key = "your_openai_api_key_here"
+# Retrieve the OpenAI API key and system message from environment
+openai.api_key = os.getenv("OPENAI_API_KEY")
+if not openai.api_key:
+    st.error("OpenAI API key is not set! Please configure the OPENAI_API_KEY environment variable.")
+    st.stop()
 
-# Define the system message for the chatbot
-system_message = "SYSTEM_MESSAGE"
+system_message = os.getenv("SYSTEM_MESSAGE")
+if not system_message:
+    st.error("System message is not set! Please configure the SYSTEM_MESSAGE environment variable.")
+    st.stop()
 
-# Streamlit App
+# Streamlit App Title
 st.title("University Chatbot")
 st.write("Chat with me about the MSL program at USC Gould School of Law!")
 
-# Initialize session state for storing the conversation
+# Initialize conversation history in session state
 if "messages" not in st.session_state:
-    st.session_state.messages = [
-        {"role": "system", "content": system_message}
-    ]
+    st.session_state.messages = [{"role": "system", "content": system_message}]
 
-# Display chat messages
+# Display chat history
+st.write("### Chat History:")
 for message in st.session_state.messages:
     if message["role"] == "user":
         st.markdown(f"**You:** {message['content']}")
     elif message["role"] == "assistant":
         st.markdown(f"**Chatbot:** {message['content']}")
 
-# User input
-user_input = st.text_input("Type your message:")
+# User input box
+user_input = st.text_input("Your message:", key="user_input")
 
-# Chatbot response
+# Send button logic
 if st.button("Send"):
     if user_input:
-        # Append user message to session state
+        # Add user message to conversation history
         st.session_state.messages.append({"role": "user", "content": user_input})
 
         try:
-            # Call OpenAI API to get the assistant's response
+            # Call OpenAI Chat API
             response = openai.ChatCompletion.create(
                 model="gpt-4",
                 messages=st.session_state.messages
             )
-            assistant_message = response["choices"][0]["message"]["content"]
+            assistant_response = response["choices"][0]["message"]["content"]
 
-            # Append assistant message to session state
-            st.session_state.messages.append({"role": "assistant", "content": assistant_message})
+            # Add assistant response to conversation history
+            st.session_state.messages.append({"role": "assistant", "content": assistant_response})
+
+            # Clear the input box
+            st.session_state.user_input = ""
         except Exception as e:
             st.error(f"Error: {str(e)}")
     else:
-        st.warning("Please enter a message!")
+        st.warning("Please type a message before sending!")
