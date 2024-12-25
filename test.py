@@ -2,7 +2,7 @@ import streamlit as st
 import openai
 
 # OpenAI API Key
-openai.api_key = "your_openai_api_key_here"
+openai.api_key = "YOUR_OPENAI_API_KEY_HERE"
 
 
 # Define the system message for the chatbot
