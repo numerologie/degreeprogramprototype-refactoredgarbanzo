@@ -29,7 +29,7 @@ def display_chat():
 
 # Display chat history
 st.title("University Chatbot")
-st.write("Chat with me!")
+st.write("Chat with me about the MSL program at USC Gould School of Law!")
 display_chat()
 
 # Input form for sending messages
@@ -53,4 +53,4 @@ if submitted and user_input:
         st.error(f"Error: {str(e)}")
 
     # Immediately refresh chat display
-    st.experimental_set_query_params()  # Forces a rerun to show updated messages
+    st.query_params.update(rerun="1")  # Force UI rerun to display updated messages
