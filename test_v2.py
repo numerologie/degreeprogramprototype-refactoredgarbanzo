@@ -49,5 +49,9 @@ if submit_button and user_input:
         )
         assistant_response = response['choices'][0]['message']['content']
         st.session_state.messages.append({"role": "assistant", "content": assistant_response})
+
+        # Refresh the chat immediately
+        st.experimental_rerun()
+
     except Exception as e:
         st.error(f"Error: {str(e)}")
