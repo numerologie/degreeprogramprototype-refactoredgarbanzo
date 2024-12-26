@@ -16,6 +16,7 @@ if not system_message:
     st.stop()
 
 
+
 # Initialize conversation history
 if "messages" not in st.session_state:
     st.session_state.messages = [{"role": "system", "content": system_message}]
@@ -34,13 +35,13 @@ st.write("Chat with me about the MSL program at USC Gould School of Law!")
 display_chat()
 
 # Input form to send a message
-with st.form("chat_form", clear_on_submit=True):
-    user_input = st.text_input("Your message:")
-    submit_button = st.form_submit_button("Send")
+user_input = st.text_input("Your message:", key="user_input")
 
-if submit_button and user_input:
+# Process input when the user presses Enter or clicks Send
+if user_input:
     # Add user message to conversation history
     st.session_state.messages.append({"role": "user", "content": user_input})
+    st.session_state.user_input = ""  # Clear the input field
 
     # Get chatbot response
     try:
@@ -50,8 +51,9 @@ if submit_button and user_input:
         )
         assistant_response = response["choices"][0]["message"]["content"]
         st.session_state.messages.append({"role": "assistant", "content": assistant_response})
-
-        # Redisplay chat immediately
-        st.experimental_rerun()  # Ensures full refresh to display updates
     except Exception as e:
         st.error(f"Error: {str(e)}")
+
+    # Redisplay chat immediately
+    st.write("### Updated Conversation:")
+    display_chat()
