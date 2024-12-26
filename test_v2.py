@@ -16,12 +16,10 @@ if not system_message:
     st.stop()
 
 
+
 # Initialize conversation history
 if "messages" not in st.session_state:
     st.session_state.messages = [{"role": "system", "content": system_message}]
-
-if "clear_input" not in st.session_state:
-    st.session_state.clear_input = False  # Track whether to clear the input field
 
 # Display chat messages
 st.title("University Chatbot")
@@ -33,34 +31,23 @@ for message in st.session_state.messages:
     elif message["role"] == "assistant":
         st.markdown(f"**Chatbot:** {message['content']}")
 
-# Handle input field reset using a key change
-if st.session_state.clear_input:
-    key = "user_input_" + str(len(st.session_state.messages))  # Change key to force input reset
-    st.session_state.clear_input = False
-else:
-    key = "user_input"
+# Use st.form to detect Enter key or button click
+with st.form("chat_form", clear_on_submit=True):
+    user_input = st.text_input("Your message:", key="user_input")
+    submit_button = st.form_submit_button("Send")
 
-# User input
-user_input = st.text_input("Your message:", key=key)
+# Process the message when "Enter" or "Send" is pressed
+if submit_button and user_input:
+    # Add user message to conversation history
+    st.session_state.messages.append({"role": "user", "content": user_input})
 
-# Send button
-if st.button("Send"):
-    if user_input:
-        # Add user message to conversation history
-        st.session_state.messages.append({"role": "user", "content": user_input})
-
-        # Get chatbot response
-        try:
-            response = openai.ChatCompletion.create(
-                model="gpt-4",
-                messages=st.session_state.messages
-            )
-            assistant_response = response['choices'][0]['message']['content']
-            st.session_state.messages.append({"role": "assistant", "content": assistant_response})
-        except Exception as e:
-            st.error(f"Error: {str(e)}")
-
-        # Signal to reset the input field
-        st.session_state.clear_input = True
-    else:
-        st.warning("Please enter a message!")
+    # Get chatbot response
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=st.session_state.messages
+        )
+        assistant_response = response['choices'][0]['message']['content']
+        st.session_state.messages.append({"role": "assistant", "content": assistant_response})
+    except Exception as e:
+        st.error(f"Error: {str(e)}")
