@@ -35,17 +35,14 @@ st.title("University Chatbot")
 st.write("Chat with me about the MSL program at USC Gould School of Law!")
 display_chat()
 
-# Input form
+# Input form for sending messages
 with st.form("chat_form", clear_on_submit=True):
-    user_input = st.text_input("Your message:", value=st.session_state.new_input)
-    submit_button = st.form_submit_button("Send")
+    user_input = st.text_input("Your message:", value=st.session_state.new_input, key="user_input")
+    submitted = st.form_submit_button("Send")
 
-if submit_button and user_input.strip():
+if submitted and user_input.strip():
     # Add user message to conversation history
     st.session_state.messages.append({"role": "user", "content": user_input.strip()})
-
-    # Clear input state
-    st.session_state.new_input = ""
 
     # Get chatbot response
     try:
@@ -56,8 +53,8 @@ if submit_button and user_input.strip():
         assistant_response = response["choices"][0]["message"]["content"]
         st.session_state.messages.append({"role": "assistant", "content": assistant_response})
 
-        # Re-render the chat immediately
-        st.experimental_rerun()
-
     except Exception as e:
         st.error(f"Error: {str(e)}")
+
+    # Clear the input field
+    st.session_state.new_input = ""
