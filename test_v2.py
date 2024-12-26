@@ -19,9 +19,6 @@ if not system_message:
 if "messages" not in st.session_state:
     st.session_state.messages = [{"role": "system", "content": system_message}]
 
-if "input_key" not in st.session_state:
-    st.session_state.input_key = 0  # Initialize a key to force input field refresh
-
 # Function to display the chat history
 def display_chat():
     for message in st.session_state.messages:
@@ -35,27 +32,25 @@ st.title("University Chatbot")
 st.write("Chat with me about the MSL program at USC Gould School of Law!")
 display_chat()
 
-# Input form
-user_input = st.text_input(
-    "Your message:",
-    key=f"user_input_{st.session_state.input_key}"  # Dynamically update the key to refresh
-)
+# Input form for sending messages
+with st.form("chat_form", clear_on_submit=True):
+    user_input = st.text_input("Your message:", key="user_input")
+    submitted = st.form_submit_button("Send")
 
-if st.button("Send"):
-    if user_input:
-        # Add user message to conversation history
-        st.session_state.messages.append({"role": "user", "content": user_input})
+if submitted and user_input:
+    # Add user message to conversation history
+    st.session_state.messages.append({"role": "user", "content": user_input})
 
-        # Get chatbot response
-        try:
-            response = openai.ChatCompletion.create(
-                model="gpt-4",
-                messages=st.session_state.messages
-            )
-            assistant_response = response["choices"][0]["message"]["content"]
-            st.session_state.messages.append({"role": "assistant", "content": assistant_response})
-        except Exception as e:
-            st.error(f"Error: {str(e)}")
+    # Get chatbot response
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=st.session_state.messages
+        )
+        assistant_response = response["choices"][0]["message"]["content"]
+        st.session_state.messages.append({"role": "assistant", "content": assistant_response})
+    except Exception as e:
+        st.error(f"Error: {str(e)}")
 
-        # Increment key to force input refresh
-        st.session_state.input_key += 1
+    # Immediately refresh chat display
+    st.experimental_set_query_params()  # Forces a rerun to show updated messages
