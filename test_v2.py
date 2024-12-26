@@ -53,4 +53,4 @@ if submitted and user_input:
         st.error(f"Error: {str(e)}")
 
     # Immediately refresh chat display
-    st.query_params()  # Forces a rerun to show updated messages
+    st.experimental_set_query_params()  # Forces a rerun to show updated messages
