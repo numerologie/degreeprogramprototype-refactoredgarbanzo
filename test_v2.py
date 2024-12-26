@@ -29,7 +29,7 @@ def display_chat():
 
 # Display chat history
 st.title("University Chatbot")
-st.write("Chat with me about the MSL program at USC Gould School of Law!")
+st.write("Chat with me!")
 display_chat()
 
 # Input form for sending messages
