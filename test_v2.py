@@ -13,6 +13,10 @@ if not system_message:
     st.error("System message is not set! Please configure the SYSTEM_MESSAGE environment variable.")
     st.stop()
 
+# Helper function to clear user input
+def clear_input():
+    st.session_state["user_input"] = ""
+
 # Streamlit App Title
 st.title("University Chatbot")
 st.write("Chat with me about the MSL program at USC Gould School of Law!")
