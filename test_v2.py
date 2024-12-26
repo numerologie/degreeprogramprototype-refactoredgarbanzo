@@ -15,9 +15,13 @@ if not system_message:
     st.error("System message is not set! Please configure the SYSTEM_MESSAGE environment variable.")
     st.stop()
 
+
 # Initialize conversation history
 if "messages" not in st.session_state:
     st.session_state.messages = [{"role": "system", "content": system_message}]
+
+if "clear_input" not in st.session_state:
+    st.session_state.clear_input = False  # Track whether to clear the input field
 
 # Display chat messages
 st.title("University Chatbot")
@@ -29,8 +33,15 @@ for message in st.session_state.messages:
     elif message["role"] == "assistant":
         st.markdown(f"**Chatbot:** {message['content']}")
 
-# Temporary variable to handle user input
-user_input = st.text_input("Your message:", key="user_input")
+# Handle input field reset using a key change
+if st.session_state.clear_input:
+    key = "user_input_" + str(len(st.session_state.messages))  # Change key to force input reset
+    st.session_state.clear_input = False
+else:
+    key = "user_input"
+
+# User input
+user_input = st.text_input("Your message:", key=key)
 
 # Send button
 if st.button("Send"):
@@ -49,7 +60,7 @@ if st.button("Send"):
         except Exception as e:
             st.error(f"Error: {str(e)}")
 
-        # Clear input field by resetting the session state for the widget
-        st.session_state.user_input = ""
+        # Signal to reset the input field
+        st.session_state.clear_input = True
     else:
         st.warning("Please enter a message!")
