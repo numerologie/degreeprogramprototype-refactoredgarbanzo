@@ -65,8 +65,8 @@ if st.session_state.pending_response:
         # Reset pending response flag
         st.session_state.pending_response = False
 
-        # Refresh the page dynamically
-        st.experimental_set_query_params(rerun=str(len(st.session_state.messages)))
+        # Refresh the page dynamically with query parameters
+        st.query_params = {"rerun": str(len(st.session_state.messages))}
     except Exception as e:
         st.error(f"Error: {str(e)}")
         st.session_state.pending_response = False
