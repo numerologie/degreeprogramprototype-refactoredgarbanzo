@@ -19,8 +19,8 @@ if not system_message:
 if "messages" not in st.session_state:
     st.session_state.messages = [{"role": "system", "content": system_message}]
 
-if "new_message_key" not in st.session_state:
-    st.session_state.new_message_key = 0  # Dynamic key for input field
+if "input_key" not in st.session_state:
+    st.session_state.input_key = 0  # Initialize a key to force input field refresh
 
 # Function to display the chat history
 def display_chat():
@@ -30,15 +30,15 @@ def display_chat():
         elif message["role"] == "assistant":
             st.markdown(f"**Chatbot:** {message['content']}")
 
-# Display the chat interface
+# Display chat history
 st.title("University Chatbot")
 st.write("Chat with me about the MSL program at USC Gould School of Law!")
 display_chat()
 
-# Input form to send a message
+# Input form
 user_input = st.text_input(
     "Your message:",
-    key=f"user_input_{st.session_state.new_message_key}"  # Dynamic key to reset input
+    key=f"user_input_{st.session_state.input_key}"  # Dynamically update the key to refresh
 )
 
 if st.button("Send"):
@@ -57,5 +57,5 @@ if st.button("Send"):
         except Exception as e:
             st.error(f"Error: {str(e)}")
 
-        # Clear the input field by incrementing the key
-        st.session_state.new_message_key += 1
+        # Increment key to force input refresh
+        st.session_state.input_key += 1
