@@ -2,14 +2,13 @@ import streamlit as st
 import openai
 import os
 
-# Set the OpenAI API key as a variable
-openai.api_key = os.getenv("YOUR_OPENAI_API_KEY_HERE")
-
-if openai.api_key == "YOUR_OPENAI_API_KEY_HERE":
-    st.error("Please replace 'YOUR_OPENAI_API_KEY_HERE' with a valid OpenAI API key.")
+# Retrieve the OpenAI API key from the environment
+openai.api_key = os.getenv("OPENAI_API_KEY")
+if not openai.api_key:
+    st.error("OpenAI API key is not set! Please configure the OPENAI_API_KEY environment variable.")
     st.stop()
 
-# Retrieve the system message from environment
+# Retrieve the system message from the environment
 system_message = os.getenv("SYSTEM_MESSAGE")
 if not system_message:
     st.error("System message is not set! Please configure the SYSTEM_MESSAGE environment variable.")
@@ -41,18 +40,4 @@ if st.button("Send"):
         # Add user message to conversation history
         st.session_state.messages.append({"role": "user", "content": user_input})
 
-        # Get chatbot response
-        try:
-            response = openai.ChatCompletion.create(
-                model="gpt-4",
-                messages=st.session_state.messages
-            )
-            assistant_response = response['choices'][0]['message']['content']
-            st.session_state.messages.append({"role": "assistant", "content": assistant_response})
-        except Exception as e:
-            st.error(f"Error: {str(e)}")
-
-        # Clear input field indirectly
-        st.session_state.user_input = ""
-    else:
-        st.warning("Please enter a message!")
+        # Get cha
