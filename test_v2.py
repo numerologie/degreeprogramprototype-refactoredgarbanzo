@@ -15,11 +15,12 @@ if not system_message:
     st.error("System message is not set! Please configure the SYSTEM_MESSAGE environment variable.")
     st.stop()
 
-
-
-# Initialize conversation history
+# Initialize conversation history and control flag
 if "messages" not in st.session_state:
     st.session_state.messages = [{"role": "system", "content": system_message}]
+
+if "refresh_chat" not in st.session_state:
+    st.session_state.refresh_chat = False
 
 # Display chat messages
 st.title("University Chatbot")
@@ -50,8 +51,12 @@ if submit_button and user_input:
         assistant_response = response['choices'][0]['message']['content']
         st.session_state.messages.append({"role": "assistant", "content": assistant_response})
 
-        # Refresh the chat immediately
-        st.experimental_rerun()
-
+        # Set the flag to refresh the chat
+        st.session_state.refresh_chat = True
     except Exception as e:
         st.error(f"Error: {str(e)}")
+
+# Refresh the chat interface if the flag is set
+if st.session_state.refresh_chat:
+    st.session_state.refresh_chat = False  # Reset the flag
+    st.experimental_rerun()
