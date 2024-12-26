@@ -15,12 +15,10 @@ if not system_message:
     st.error("System message is not set! Please configure the SYSTEM_MESSAGE environment variable.")
     st.stop()
 
-# Initialize conversation history and control flag
+
+# Initialize conversation history
 if "messages" not in st.session_state:
     st.session_state.messages = [{"role": "system", "content": system_message}]
-
-if "refresh_chat" not in st.session_state:
-    st.session_state.refresh_chat = False
 
 # Display chat messages
 st.title("University Chatbot")
@@ -32,12 +30,12 @@ for message in st.session_state.messages:
     elif message["role"] == "assistant":
         st.markdown(f"**Chatbot:** {message['content']}")
 
-# Use st.form to detect Enter key or button click
+# Use st.form to handle user input and submission
 with st.form("chat_form", clear_on_submit=True):
     user_input = st.text_input("Your message:", key="user_input")
     submit_button = st.form_submit_button("Send")
 
-# Process the message when "Enter" or "Send" is pressed
+# Process the message
 if submit_button and user_input:
     # Add user message to conversation history
     st.session_state.messages.append({"role": "user", "content": user_input})
@@ -51,12 +49,8 @@ if submit_button and user_input:
         assistant_response = response['choices'][0]['message']['content']
         st.session_state.messages.append({"role": "assistant", "content": assistant_response})
 
-        # Set the flag to refresh the chat
-        st.session_state.refresh_chat = True
+        # Immediately refresh chat history
+        st.experimental_set_query_params(rerun=str(len(st.session_state.messages)))
+
     except Exception as e:
         st.error(f"Error: {str(e)}")
-
-# Refresh the chat interface if the flag is set
-if st.session_state.refresh_chat:
-    st.session_state.refresh_chat = False  # Reset the flag
-    st.experimental_rerun()
