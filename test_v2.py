@@ -3,7 +3,7 @@ import openai
 import os
 
 # Set the OpenAI API key as a variable
-openai.api_key = "YOUR_OPENAI_API_KEY_HERE"
+openai.api_key = os.getenv("YOUR_OPENAI_API_KEY_HERE")
 
 if openai.api_key == "YOUR_OPENAI_API_KEY_HERE":
     st.error("Please replace 'YOUR_OPENAI_API_KEY_HERE' with a valid OpenAI API key.")
