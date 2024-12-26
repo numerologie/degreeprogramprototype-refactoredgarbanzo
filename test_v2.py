@@ -18,6 +18,8 @@ if not system_message:
 # Initialize session state variables
 if "messages" not in st.session_state:
     st.session_state.messages = [{"role": "system", "content": system_message}]
+if "last_user_input" not in st.session_state:
+    st.session_state.last_user_input = None
 if "pending_response" not in st.session_state:
     st.session_state.pending_response = False
 
@@ -41,16 +43,15 @@ with st.form("chat_form", clear_on_submit=True):
     user_input = st.text_input("Your message:", key="user_input")
     submitted = st.form_submit_button("Send")
 
-# Handle message submission
+# Process user input
 if submitted and user_input.strip():
     # Add user message to session state
     st.session_state.messages.append({"role": "user", "content": user_input.strip()})
-
-    # Set pending response flag
+    st.session_state.last_user_input = user_input.strip()
     st.session_state.pending_response = True
 
-# Handle chatbot response generation
-if st.session_state.pending_response:
+# Process chatbot response
+if st.session_state.pending_response and st.session_state.last_user_input:
     try:
         # Call OpenAI API for chatbot response
         response = openai.ChatCompletion.create(
@@ -62,11 +63,12 @@ if st.session_state.pending_response:
         # Add chatbot response to session state
         st.session_state.messages.append({"role": "assistant", "content": assistant_response})
 
-        # Reset pending response flag
+        # Reset flags
+        st.session_state.last_user_input = None
         st.session_state.pending_response = False
 
         # Refresh the page dynamically with query parameters
-        st.query_params = {"rerun": str(len(st.session_state.messages))}
+        st.query_params = {"updated": str(len(st.session_state.messages))}
     except Exception as e:
         st.error(f"Error: {str(e)}")
         st.session_state.pending_response = False
