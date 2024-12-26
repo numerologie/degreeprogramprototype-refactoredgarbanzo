@@ -3,7 +3,7 @@ import openai
 import os
 
 # Retrieve the OpenAI API key from the environment
-openai.api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key = os.getenv("YOUR_OPENAI_API_KEY_HERE")
 if not openai.api_key:
     st.error("OpenAI API key is not set! Please configure the OPENAI_API_KEY environment variable.")
     st.stop()
