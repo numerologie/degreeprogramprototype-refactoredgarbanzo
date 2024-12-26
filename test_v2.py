@@ -19,6 +19,9 @@ if not system_message:
 if "messages" not in st.session_state:
     st.session_state.messages = [{"role": "system", "content": system_message}]
 
+if "new_input" not in st.session_state:
+    st.session_state.new_input = ""  # Input state for user messages
+
 # Function to display the chat history
 def display_chat():
     for message in st.session_state.messages:
@@ -32,14 +35,17 @@ st.title("University Chatbot")
 st.write("Chat with me about the MSL program at USC Gould School of Law!")
 display_chat()
 
-# Input form for sending messages
+# Input form
 with st.form("chat_form", clear_on_submit=True):
-    user_input = st.text_input("Your message:", key="user_input")
-    submitted = st.form_submit_button("Send")
+    user_input = st.text_input("Your message:", value=st.session_state.new_input)
+    submit_button = st.form_submit_button("Send")
 
-if submitted and user_input:
+if submit_button and user_input.strip():
     # Add user message to conversation history
-    st.session_state.messages.append({"role": "user", "content": user_input})
+    st.session_state.messages.append({"role": "user", "content": user_input.strip()})
+
+    # Clear input state
+    st.session_state.new_input = ""
 
     # Get chatbot response
     try:
@@ -49,8 +55,9 @@ if submitted and user_input:
         )
         assistant_response = response["choices"][0]["message"]["content"]
         st.session_state.messages.append({"role": "assistant", "content": assistant_response})
+
+        # Re-render the chat immediately
+        st.experimental_rerun()
+
     except Exception as e:
         st.error(f"Error: {str(e)}")
-
-    # Immediately refresh chat display
-    st.query_params.update(rerun="1")  # Force UI rerun to display updated messages
