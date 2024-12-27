@@ -24,7 +24,7 @@ jobs:
 
       - name: Deploy Streamlit App
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.YOUR_OPENAI_API_KEY_HERE }}
           SYSTEM_MESSAGE: ${{ secrets.SYSTEM_MESSAGE }}
         run: |
           streamlit run test_v2.py
